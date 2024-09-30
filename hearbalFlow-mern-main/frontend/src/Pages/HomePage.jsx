@@ -5,7 +5,7 @@ import modBack from "../assets/homeBach.jpg"; // You may want to update this bac
 import { motion } from "framer-motion";
 import Per from "../assets/performanceimg.jpeg"; // Replace with herbal medicine-related images
 import Style from "../assets/stylevehimg.jpeg"; // Replace with herbal medicine-related images
-import Effi from "../assets/efficencyimg.jpeg";
+import Effi from "../assets/efficencyimg.jpg";
 import CanB from "../assets/canback2.jpg";
 import CanB1 from "../assets/canback.jpg";
 import axios from "axios";

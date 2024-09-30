@@ -11,9 +11,9 @@ const InventoryReport = ({ packages }) => {
         {/* Header Section */}
         <View style={styles.header}>
           <Text style={styles.centerText}>
-            Mr Automative Service Center, Gampaha
+           Herbal Flow, Sapugaskanda
           </Text>
-          <Text style={styles.centerText}>Package Report</Text>
+          <Text style={styles.centerText}>Inventory Report</Text>
           <Text style={styles.centerText}>
             Report Generated Date: {currentDate}
           </Text>
