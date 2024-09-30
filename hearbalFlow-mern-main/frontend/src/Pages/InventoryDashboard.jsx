@@ -325,7 +325,7 @@ const InventoryDashboard = () => {
                     {item.category}
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
-                    ${item.price}
+                    Rs. {item.price}
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
                     {item.quantity}

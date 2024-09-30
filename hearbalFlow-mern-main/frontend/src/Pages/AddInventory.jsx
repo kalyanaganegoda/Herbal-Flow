@@ -242,6 +242,15 @@ export const AddInventory = () => {
                       name="itemName"
                       value={itemName}
                       onChange={(e) => setItemName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (
+                          !/^[a-zA-Z\s]$/.test(e.key) &&
+                          e.key !== "Backspace" &&
+                          e.key !== "Tab"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       className="border border-gray-300 rounded-md p-2 mr-10"
                       required
                     />
@@ -255,6 +264,15 @@ export const AddInventory = () => {
                       name="category"
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (
+                          !/^[a-zA-Z\s]$/.test(e.key) &&
+                          e.key !== "Backspace" &&
+                          e.key !== "Tab"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
                       required
                     />
@@ -296,16 +314,30 @@ export const AddInventory = () => {
                       className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
                       required
                     />
+                    {mfd >= exp ? (
+                      <p className="text-red-500 text-xs mt-1">
+                        EXP should grater than to MFD
+                      </p>
+                    ) : (
+                      ""
+                    )}
                   </div>
                   <div className="flex flex-col w-1/4">
                     <label className="block text-gray-700 required">
                       Price:
                     </label>
                     <input
-                      type="number"
+                      type="text" // use text to control decimal input better
                       name="price"
                       value={price}
-                      onChange={(e) => setPrice(e.target.value)}
+                      onChange={(e) => {
+                        let value = e.target.value;
+
+                        // Regular expression to match valid price inputs (up to 2 decimal points)
+                        if (/^\d*\.?\d{0,2}$/.test(value)) {
+                          setPrice(value);
+                        }
+                      }}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
                       required
                     />
@@ -318,9 +350,17 @@ export const AddInventory = () => {
                       type="number"
                       name="quantity"
                       value={quantity}
-                      onChange={(e) => setQuantity(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+
+                        // Ensure that only integers are accepted
+                        if (/^\d*$/.test(value)) {
+                          setQuantity(value);
+                        }
+                      }}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100"
                       required
+                      step="1" // prevents decimal values
                     />
                   </div>
                 </div>
@@ -428,6 +468,15 @@ export const AddInventory = () => {
                       name="supName"
                       value={supName}
                       onChange={(e) => setSupName(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (
+                          !/^[a-zA-Z\s]$/.test(e.key) &&
+                          e.key !== "Backspace" &&
+                          e.key !== "Tab"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
                       required
                     />
@@ -462,17 +511,37 @@ export const AddInventory = () => {
                       type="text"
                       name="supNIC"
                       value={supNIC}
-                      onChange={(e) => setSupNIC(e.target.value)}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        const isValidNumbers = /^[0-9]*$/.test(
+                          value.slice(0, 9)
+                        );
+                        const isValidTenth = /^[0-9vV]?$/.test(value.charAt(9));
+                        const isLengthValid = value.length <= 12;
+                        if (isValidNumbers && isValidTenth && isLengthValid) {
+                          setSupNIC(value);
+                        }
+                      }}
                       className="border border-gray-300 rounded-md p-2 mr-10"
                       required
+                      maxLength={12}
                     />
+
+                    {!/^\d{12}$/.test(supNIC) &&
+                      !/^\d{9}[vV]$/.test(supNIC) &&
+                      supNIC && (
+                        <p className="text-red-500 text-xs mt-1">
+                          Please enter a valid NIC (12 digits or 9 digits
+                          followed by 'V').
+                        </p>
+                      )}
                   </div>
                   <div className="flex flex-col w-1/2">
                     <label className="block text-gray-700 required">
                       Supplier Phone:
                     </label>
                     <input
-                      type="tel"
+                      type="number"
                       name="supPhone"
                       value={supPhone}
                       onChange={(e) => setSupPhone(e.target.value)}
