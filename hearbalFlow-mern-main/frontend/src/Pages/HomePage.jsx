@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
-import modBack from "../assets/homeBach.jpg"; // You may want to update this background image to match a herbal theme
+import modBack from "../assets/homeBach.jpg";
 import { motion } from "framer-motion";
-import Per from "../assets/performanceimg.jpeg"; // Replace with herbal medicine-related images
-import Style from "../assets/stylevehimg.jpeg"; // Replace with herbal medicine-related images
 import Effi from "../assets/efficencyimg.jpg";
-import CanB from "../assets/canback2.jpg";
+import CanB from "../assets/images/10311150.jpg";
 import CanB1 from "../assets/canback.jpg";
 import axios from "axios";
+import { useSpring, animated } from "@react-spring/web";
 
 const HomePage = () => {
   const [items, setItems] = useState([]);
@@ -35,18 +34,18 @@ const HomePage = () => {
       <Navbar />
 
       {/* Section 1: intro */}
-      <div
-        className="bg-center bg-cover min-h-screen flex"
+      <animated.div
+        className="bg-center bg-cover min-h-screen flex "
         style={{ backgroundImage: `url(${CanB})` }}
       >
-        <div className="text-center  text-white w-1/2  mt-48">
+        <div className="text-center  text-white mt-32 w-2/5">
           <h2 className="text-5xl bg-slate-600 font-extrabold p-4">
             Embrace Natural Healing
           </h2>
-          <p className="mt-10 text-xl p-6">
+          <p className="mt-10 text-xl p-6 text-black text-left">
             Discover the power of herbal medicine for holistic health and
             wellness. Our carefully crafted remedies harness the healing
-            properties of nature to help you lead a healthier, balanced life.
+            properties of nature
             <br /> <br />
             Discover the power of herbal medicine for holistic health and
             wellness. Our carefully crafted remedies harness the healing
@@ -67,7 +66,7 @@ const HomePage = () => {
           </button>
         </div>
         <div className="w-1/2"></div>
-      </div>
+      </animated.div>
 
       {/* Section 3:*/}
       <motion.section
@@ -83,7 +82,7 @@ const HomePage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-6">
           <div className="bg-white p-6 shadow-lg rounded-lg">
             <img
-              src={CanB1} // Replace with a relevant herbal image
+              src={CanB1}
               alt="Natural Healing"
               className="w-full h-40 object-cover rounded-lg"
             />
@@ -98,7 +97,7 @@ const HomePage = () => {
           </div>
           <div className="bg-white p-6 shadow-lg rounded-lg">
             <img
-              src={modBack} // Replace with a relevant herbal image
+              src={modBack}
               alt="Holistic Wellness"
               className="w-full h-40 object-cover rounded-lg"
             />
@@ -113,7 +112,7 @@ const HomePage = () => {
           </div>
           <div className="bg-white p-6 shadow-lg rounded-lg">
             <img
-              src={Effi} // Replace with a relevant herbal image
+              src={Effi}
               alt="Sustainable Health"
               className="w-full h-40 object-cover rounded-lg"
             />
@@ -145,14 +144,12 @@ const HomePage = () => {
             items.map((item) => (
               <div key={item._id} className="bg-white p-6 shadow-lg rounded-lg">
                 <img
-                  src={item.imageURL} // Ensure your API returns image URLs or handle image URLs appropriately
-                  alt={item.name} // Replace with relevant alt text
+                  src={item.imageURL}
+                  alt={item.name}
                   className="w-full h-40 object-cover rounded-lg"
                 />
                 <h3 className="mt-4 text-xl font-semibold">{item.itemName}</h3>
-                <p className="mt-2 text-gray-600">
-                  {item.description} {/* Display a brief description */}
-                </p>
+                <p className="mt-2 text-gray-600">{item.description}</p>
                 <button className="bg-lime-500 text-black text-xl px-4 py-2 rounded-md mt-5 mb-10">
                   Shop Now
                 </button>

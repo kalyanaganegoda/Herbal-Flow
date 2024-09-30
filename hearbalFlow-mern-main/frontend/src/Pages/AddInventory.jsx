@@ -327,13 +327,12 @@ export const AddInventory = () => {
                       Price:
                     </label>
                     <input
-                      type="text" // use text to control decimal input better
+                      type="text"
                       name="price"
                       value={price}
                       onChange={(e) => {
                         let value = e.target.value;
 
-                        // Regular expression to match valid price inputs (up to 2 decimal points)
                         if (/^\d*\.?\d{0,2}$/.test(value)) {
                           setPrice(value);
                         }
@@ -353,14 +352,13 @@ export const AddInventory = () => {
                       onChange={(e) => {
                         const value = e.target.value;
 
-                        // Ensure that only integers are accepted
                         if (/^\d*$/.test(value)) {
                           setQuantity(value);
                         }
                       }}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100"
                       required
-                      step="1" // prevents decimal values
+                      step="1"
                     />
                   </div>
                 </div>

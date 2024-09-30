@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className=" bg-PrimaryColor text-ExtraDarkColor rounded-t-3xl mt-8 md:mt-0">
       <div className="flex flex-col md:flex-row justify-between p-8 md:px-32 px-5">
         <div>
-          <h1 className=" font-semibold text-3xl pb-4">StyleNestle</h1>
+          <h1 className=" font-semibold text-3xl pb-4">HerbalFlow</h1>
           <div className=" flex gap-5 ml-3">
             <FaFacebook
               size={32}
@@ -102,13 +102,13 @@ export default function Footer() {
           <h1 className=" font-medium text-xl pb-4 pt-5 md:pt-0">Contact Us</h1>
           <nav className=" flex flex-col gap-2">
             <Link to="/" spy={true} smooth={true} duration={500}>
-              123 Elm Street, Suite 456 Springfield, IL 62701 United States
+              N0 6, HearbalFlow, Biyagama, Srilanka
             </Link>
             <Link to="/" spy={true} smooth={true} duration={500}>
-              fashion@style.com
+              hearbalflow@gmail.com
             </Link>
             <Link to="/" spy={true} smooth={true} duration={500}>
-              +123-456-7890
+              +9476556435
             </Link>
           </nav>
         </div>
@@ -116,8 +116,8 @@ export default function Footer() {
       <div>
         <p className=" text-center py-4">
           @copyright developed by
-          <span className=" text-black"> champion programmers</span> | All
-          rights reserved
+          <span className=" text-black"> HearbalFlow</span> | All rights
+          reserved
         </p>
       </div>
     </footer>
