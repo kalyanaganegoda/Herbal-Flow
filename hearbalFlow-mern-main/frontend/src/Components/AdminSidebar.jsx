@@ -112,12 +112,12 @@ const AdminSidebar = ({ onCollapseChange }) => {
             className="sidebar-submenu"
           >
             <Link to="/dash">
-              <MenuItem suffix={<span className="badge red">6</span>}>
+              <MenuItem suffix={<span className="badge red"></span>}>
                 Item List
               </MenuItem>
             </Link>
             <Link to="/add">
-              <MenuItem suffix={<span className="badge red">6</span>}>
+              <MenuItem suffix={<span className="badge red"></span>}>
                 Add New Item
               </MenuItem>
             </Link>

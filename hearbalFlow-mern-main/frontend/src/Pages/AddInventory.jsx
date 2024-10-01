@@ -539,18 +539,46 @@ export const AddInventory = () => {
                       Supplier Phone:
                     </label>
                     <input
-                      type="number"
+                      type="text"
                       name="supPhone"
                       value={supPhone}
-                      onChange={(e) => setSupPhone(e.target.value)}
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/\D/g, "");
+                        if (value.length > 10) value = value.slice(0, 10);
+
+                        const validPrefixes = [
+                          "070",
+                          "071",
+                          "072",
+                          "074",
+                          "075",
+                          "076",
+                          "077",
+                          "078",
+                        ];
+                        const prefix = value.slice(0, 3);
+
+                        if (
+                          value.length >= 3 &&
+                          !validPrefixes.includes(prefix)
+                        ) {
+                          Swal.fire(
+                            "Phone No Error",
+                            "Invalid phone number: prefix not allowed.",
+                            "error"
+                          );
+
+                          return;
+                        }
+                        const formatted = value.replace(
+                          /(\d{3})(\d{3})(\d{4})/,
+                          "$1 $2 $3"
+                        );
+                        setSupPhone(formatted);
+                      }}
                       className="border border-gray-300 rounded-md p-2 bg-gray-100"
                       required
                     />
-                    {!/^[0-9]{10}$/.test(supPhone) && supPhone && (
-                      <p className="text-red-500 text-xs mt-1">
-                        Please enter a valid phone no.
-                      </p>
-                    )}
                   </div>
                 </div>
 

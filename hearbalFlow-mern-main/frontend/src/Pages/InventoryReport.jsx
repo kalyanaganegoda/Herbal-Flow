@@ -10,10 +10,10 @@ const InventoryReport = ({ packages }) => {
       <Page size="A4" style={styles.page}>
         {/* Header Section */}
         <View style={styles.header}>
-          <Text style={styles.centerText}>
-           Herbal Flow, Sapugaskanda
-          </Text>
+          <Text style={styles.centerText}>Herbal Flow, Sapugaskanda</Text>
           <Text style={styles.centerText}>Inventory Report</Text>
+          <Text style={styles.centerText}>Email: herbalflow@gmail.com</Text>
+          <Text style={styles.centerText}>Phone: +9476556435</Text>
           <Text style={styles.centerText}>
             Report Generated Date: {currentDate}
           </Text>

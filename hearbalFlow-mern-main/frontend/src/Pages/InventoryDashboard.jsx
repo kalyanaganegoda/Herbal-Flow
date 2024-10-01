@@ -270,7 +270,7 @@ const InventoryDashboard = () => {
           </div>
           <div className="flex flex-col items-center">
             <h3 className="text-5xl font-extrabold text-dark-grey-900">
-              <CountUp id="countto2" end={1200} />+
+              <CountUp id="countto2" end={400} />+
             </h3>
             <p className="text-base font-medium text-dark-grey-600">
               Happy Customers
@@ -278,15 +278,15 @@ const InventoryDashboard = () => {
           </div>
           <div className="flex flex-col items-center">
             <h3 className="text-5xl font-extrabold text-dark-grey-900">
-              <CountUp id="countto3" end={150} />+
+              <CountUp id="countto3" end={10} />+
             </h3>
             <p className="text-base font-medium text-dark-grey-600">
-              Employees
+              Suppliers
             </p>
           </div>
           <div className="flex flex-col items-center">
             <h3 className="text-5xl font-extrabold text-dark-grey-900">
-              <CountUp id="countto3" end={150} />+
+              <CountUp id="countto3" end={20} />+
             </h3>
             <p className="text-base font-medium text-dark-grey-600">
               Employees
