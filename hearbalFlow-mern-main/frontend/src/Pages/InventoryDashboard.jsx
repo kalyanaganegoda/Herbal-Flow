@@ -237,7 +237,7 @@ const InventoryDashboard = () => {
           />
           <PDFDownloadLink
             document={<InventoryReport packages={filteredItems} />}
-            fileName="filtered-packages.pdf"
+            fileName="filtered-products.pdf"
           >
             {({ loading }) => (
               <button

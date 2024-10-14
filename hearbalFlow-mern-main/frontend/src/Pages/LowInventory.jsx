@@ -9,7 +9,6 @@ import Switch from "@mui/material/Switch";
 import Swal from "sweetalert2";
 import Badge from "@mui/material/Badge";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
-import Modal from "react-modal";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import InventoryReport from "./InventoryReport";
 import { useNavigate } from "react-router-dom";
@@ -17,48 +16,14 @@ import { init, send } from "emailjs-com";
 
 const LowInventory = () => {
   const navigate = useNavigate();
-  const [step, setStep] = useState(1);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [items, setItems] = useState([]); // To store fetched items
   const [loading, setLoading] = useState(true); // To manage loading state
   const [error, setError] = useState(null); // To manage error state
-  const [isModalOpen, setIsModalOpen] = useState(false); // Modal state
-  const [selectedItem, setSelectedItem] = useState({}); // To store the item being updated
-  const [supplier, setSupplier] = useState({
-    supId: "",
-    supName: "",
-    supEmail: "",
-    supNIC: "",
-    supPhone: "",
-  });
   const [searchValue, setSearchValue] = useState("");
   const [filteredItems, setFilteredItems] = useState([]);
 
   init("jm1C0XkEa3KYwvYK0");
-
-  const nextStep = () => {
-    setStep((prevStep) => prevStep + 1);
-  };
-
-  const prevStep = () => {
-    setStep((prevStep) => prevStep - 1);
-  };
-
-  const openUpdateModal = (item) => {
-    setSelectedItem(item);
-    setSupplier({
-      supId: item.suplier.supId,
-      supName: item.suplier.supName,
-      supEmail: item.suplier.supEmail,
-      supNIC: item.suplier.supNIC,
-      supPhone: item.suplier.supPhone,
-    });
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
 
   const handleCollapseChange = (collapsed) => {
     setSidebarCollapsed(collapsed);
@@ -111,24 +76,6 @@ const LowInventory = () => {
     },
   }));
 
-  const handleSupUpdateChange = (e) => {
-    const { name, value } = e.target;
-    setSupplier((prew) => ({
-      ...prew,
-      [name]: value,
-    }));
-    console.log(selectedItem);
-  };
-
-  const handleUpdateChange = (e) => {
-    const { name, value } = e.target;
-    setSelectedItem((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    console.log(selectedItem);
-  };
-
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -167,62 +114,53 @@ const LowInventory = () => {
     try {
       const result = await Swal.fire({
         title: "Are you sure?",
-        text: "You will not be able to recover Item",
+        text: "You will re-order this item",
         icon: "warning",
         fontFamily: "Montserrat, sans-serif",
+        input: "number", // Adds an input for quantity
+        inputLabel: "Enter quantity to reorder",
+        inputPlaceholder: "Quantity",
+        inputAttributes: {
+          min: 1,
+          step: 1,
+        },
         showCancelButton: true,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonText: "Yes, re order it!",
+        preConfirm: (quantity) => {
+          if (!quantity || quantity <= 0) {
+            Swal.showValidationMessage("Please enter a valid quantity.");
+          }
+          return quantity; // Return the quantity inputted
+        },
       });
 
       if (result.isConfirmed) {
+        const quantity = result.value; // Get the inputted quantity
         await send("service_fjpvjh9", "template_atolrdf", {
-          to_email: item.itemName,
-          product_name: item.suplier.supEmail,
+          to_email: item.suplier.supEmail,
+          product_name: item.itemName,
+          quantity: quantity,
           status: "newStatus",
         });
 
-        Swal.fire("Deleted!", "The Item has been deleted.", "success");
+        Swal.fire(
+          "Deleted!",
+          `The Item has been re-ordered. Quantity: ${quantity}`,
+          "success"
+        );
       }
     } catch (error) {
-      console.error("Error deleting Item:", error);
-      Swal.fire("Error", "An error occurred while deleting the Item.", "error");
+      console.error("Error re-ordering Item:", error);
+      Swal.fire(
+        "Error",
+        "An error occurred while re-ordering the Item.",
+        "error"
+      );
     }
   };
 
-  const handleUpdate = async () => {
-    try {
-      const requestBody = {
-        itemName: selectedItem.itemName,
-        category: selectedItem.category,
-        sku: selectedItem.sku,
-        mfd: selectedItem.mfd,
-        exp: selectedItem.exp,
-        price: selectedItem.price,
-        quantity: selectedItem.quantity,
-        description: selectedItem.description,
-        imageURL: selectedItem.imageURL,
-        suplier: {
-          supId: supplier.supId,
-          supName: supplier.supName,
-          supEmail: supplier.supEmail,
-          supNIC: supplier.supNIC,
-          supPhone: supplier.supPhone,
-        },
-      };
-      const response = await axios.put(
-        `http://localhost:3000/api/item/update/${selectedItem._id}`,
-        requestBody
-      );
-      Swal.fire("Updated!", "The Item has been updated.", "success");
-      window.location.reload();
-      console.log(requestBody);
-    } catch (error) {
-      console.log(error);
-      Swal.fire("Error", "An error occurred while updatingthe Item.", "error");
-    }
-  };
   return (
     <div>
       <AdminSidebar onCollapseChange={handleCollapseChange} />
@@ -360,300 +298,6 @@ const LowInventory = () => {
             </tbody>
           </table>
         </div>
-        <Modal
-          isOpen={isModalOpen}
-          onRequestClose={closeModal}
-          contentLabel="Update Item"
-          style={{
-            overlay: {
-              backgroundColor: "rgba(0, 0, 0, 0.75)",
-            },
-            content: {
-              top: "50%",
-              left: "50%",
-              right: "auto",
-              bottom: "auto",
-              marginRight: "-50%",
-              transform: "translate(-50%, -50%)",
-              width: "800px",
-              height: "700px",
-              padding: "20px",
-            },
-          }}
-        >
-          {step === 1 && (
-            <div className="pl-5 pt-2 pr-5">
-              <form>
-                <div className="bg-slate-200 p-4 rounded-2xl shadow-sm">
-                  <h2 className="text-2xl font-bold mb-5">
-                    Section 1: General Information
-                  </h2>
-
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex flex-col w-1/3">
-                      <label className="block text-gray-700 required">
-                        Name:
-                      </label>
-                      <input
-                        type="text"
-                        name="itemName"
-                        value={selectedItem.itemName}
-                        onChange={handleUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 mr-10"
-                        required
-                      />
-                    </div>
-                    <div className="flex flex-col w-1/3">
-                      <label className="block text-gray-700 required">
-                        Category:
-                      </label>
-                      <input
-                        type="text"
-                        name="category"
-                        value={selectedItem.category}
-                        onChange={handleUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
-                        required
-                      />
-                    </div>
-                    <div className="flex flex-col w-1/3">
-                      <label className="block text-gray-700 required">
-                        SKU:
-                      </label>
-                      <input
-                        type="text"
-                        name="sku"
-                        value={selectedItem.sku}
-                        onChange={handleUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 bg-gray-100"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex flex-col w-1/4">
-                      <label className="block text-gray-700 required">
-                        MFD:
-                      </label>
-                      <input
-                        type="date"
-                        name="mfd"
-                        value={selectedItem.mfd}
-                        onChange={handleUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
-                        required
-                      />
-                    </div>
-                    <div className="flex flex-col w-1/4">
-                      <label className="block text-gray-700 required">
-                        Exp:
-                      </label>
-                      <input
-                        type="date"
-                        name="exp"
-                        value={selectedItem.exp}
-                        onChange={handleUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
-                        required
-                      />
-                    </div>
-                    <div className="flex flex-col w-1/4">
-                      <label className="block text-gray-700 required">
-                        Price:
-                      </label>
-                      <input
-                        type="number"
-                        name="price"
-                        value={selectedItem.price}
-                        onChange={handleUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
-                        required
-                      />
-                    </div>
-                    <div className="flex flex-col w-1/4">
-                      <label className="block text-gray-700 required">
-                        Quantity:
-                      </label>
-                      <input
-                        type="number"
-                        name="quantity"
-                        value={selectedItem.quantity}
-                        onChange={handleUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 bg-gray-100"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-4">
-                    <label className="block text-gray-700 required">
-                      Description:
-                    </label>
-                    <textarea
-                      name="description"
-                      value={selectedItem.description}
-                      onChange={handleUpdateChange}
-                      className="border border-gray-300 rounded-md p-2 w-full bg-gray-100"
-                      required
-                    />
-                  </div>
-
-                  <div className="mb-4">
-                    <label className="block text-gray-700">Upload Image:</label>
-                    <input
-                      type="file"
-                      name="image"
-                      onChange={handleUpdateChange}
-                      className="border border-gray-300 rounded-md p-2 w-full"
-                    />
-                    {/* {uploadProgress > 0 && (
-                    <div className="w-full max-w-sm mt-4">
-                      <div className="relative pt-1">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs font-semibold inline-block py-1 px-2 rounded text-teal-600 bg-teal-200">
-                            Upload Progress
-                          </span>
-                          <span className="text-xs font-semibold inline-block py-1 px-2 rounded text-teal-600 bg-teal-200">
-                            {Math.round(uploadProgress)}%
-                          </span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="relative flex items-center justify-center w-full">
-                            <div className="w-full bg-gray-200 rounded">
-                              <div
-                                className="bg-teal-600 text-xs leading-none py-1 text-center text-white rounded"
-                                style={{ width: `${uploadProgress}%` }}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )} */}
-                  </div>
-                  <div className="flex items-center mb-4">
-                    <button
-                      // onClick={handleUpload}
-                      // disabled={loading}
-                      className="bg-black text-white text-xl px-4 py-2 rounded-md mt-5"
-                    >
-                      {loading ? "Uploading..." : "Upload"}
-                    </button>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={nextStep}
-                    className="bg-blue-500 text-white p-2 rounded-md"
-                  >
-                    Next
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-
-          {step === 2 && (
-            <div className="pl-16 pt-2 pr-10 mt-20">
-              <form>
-                <div className="bg-slate-200 p-4 rounded-2xl shadow-sm">
-                  <h2 className="text-2xl font-bold mb-5">
-                    Section 2: Supplier Information
-                  </h2>
-
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex flex-col w-1/3">
-                      <label className="block text-gray-700 required">
-                        Supplier ID:
-                      </label>
-                      <input
-                        type="text"
-                        name="supId"
-                        value={supplier.supId}
-                        onChange={handleSupUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 mr-10"
-                        required
-                      />
-                    </div>
-                    <div className="flex flex-col w-1/3">
-                      <label className="block text-gray-700 required">
-                        Supplier Name:
-                      </label>
-                      <input
-                        type="text"
-                        name="supName"
-                        value={supplier.supName}
-                        onChange={handleSupUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 bg-gray-100 mr-10"
-                        required
-                      />
-                    </div>
-                    <div className="flex flex-col w-1/3">
-                      <label className="block text-gray-700 required">
-                        Supplier Email:
-                      </label>
-                      <input
-                        type="email"
-                        name="supEmail"
-                        value={supplier.supEmail}
-                        onChange={handleSupUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 bg-gray-100"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex flex-col w-1/2">
-                      <label className="block text-gray-700 required">
-                        Supplier NIC:
-                      </label>
-                      <input
-                        type="text"
-                        name="supNIC"
-                        value={supplier.supNIC}
-                        onChange={handleSupUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 mr-10"
-                        required
-                      />
-                    </div>
-                    <div className="flex flex-col w-1/2">
-                      <label className="block text-gray-700 required">
-                        Supplier Phone:
-                      </label>
-                      <input
-                        type="tel"
-                        name="supPhone"
-                        value={supplier.supPhone}
-                        onChange={handleSupUpdateChange}
-                        className="border border-gray-300 rounded-md p-2 bg-gray-100"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={prevStep}
-                    className="bg-gray-500 text-white p-2 rounded-md mr-4"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    type="button"
-                    className="bg-blue-500 text-white p-2 rounded-md"
-                    onClick={handleUpdate}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-          <button on onClick={closeModal}>
-            close
-          </button>
-        </Modal>
       </main>
     </div>
   );
