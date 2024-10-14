@@ -149,8 +149,14 @@ const AdminSidebar = ({ onCollapseChange }) => {
               },
             }}
           >
-            <MenuItem>Dark Mode</MenuItem>
-            <MenuItem>Light Mode</MenuItem>
+            <Link to="/addsupplier">
+              {" "}
+              <MenuItem>Add Supplier</MenuItem>
+            </Link>
+            <Link to="/supplier">
+              {" "}
+              <MenuItem>Supplier List</MenuItem>
+            </Link>
           </SubMenu>
 
           <SubMenu

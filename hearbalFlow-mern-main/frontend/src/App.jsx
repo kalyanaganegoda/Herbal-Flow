@@ -13,6 +13,8 @@ import InventoryDashboard from "./Pages/InventoryDashboard";
 import Test from "./Components/Test";
 import Login from "./Pages/Login";
 import LowInventory from "./Pages/LowInventory";
+import SupplierDashboard from "./Pages/SupplierDashboard";
+import SUpplierAdd from "./Pages/AddSupplier";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -26,6 +28,8 @@ function App() {
         <Route path="/dash" element={<InventoryDashboard />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/lowi" element={<LowInventory />}></Route>
+        <Route path="/supplier" element={<SupplierDashboard />}></Route>
+        <Route path="/addsupplier" element={<SUpplierAdd />}></Route>
       </Routes>
     </BrowserRouter>
   );

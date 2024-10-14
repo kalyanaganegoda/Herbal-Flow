@@ -48,7 +48,7 @@ const InventoryReport = ({ packages }) => {
             <Text style={styles.tableCell}>{item.price}</Text>
             <Text style={styles.tableCell}>{item.quantity}</Text>
             <Text style={styles.tableCell}>{item.mfd}</Text>
-            <Text style={styles.tableCell}>{item.exp}</Text>
+            <Text style={styles.tableCell}>{item.quantity}</Text>
           </View>
         ))}
       </Page>
