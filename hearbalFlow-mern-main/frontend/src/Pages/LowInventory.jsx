@@ -13,8 +13,9 @@ import Modal from "react-modal";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import InventoryReport from "./InventoryReport";
 import { useNavigate } from "react-router-dom";
+import { init, send } from "emailjs-com";
 
-const InventoryDashboard = () => {
+const LowInventory = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -32,6 +33,8 @@ const InventoryDashboard = () => {
   });
   const [searchValue, setSearchValue] = useState("");
   const [filteredItems, setFilteredItems] = useState([]);
+
+  init("jm1C0XkEa3KYwvYK0");
 
   const nextStep = () => {
     setStep((prevStep) => prevStep + 1);
@@ -143,8 +146,10 @@ const InventoryDashboard = () => {
   }, []);
 
   useEffect(() => {
-    const searchResult = items.filter((item) =>
-      item.itemName.toLowerCase().includes(searchValue.toLowerCase())
+    const searchResult = items.filter(
+      (item) =>
+        item.itemName.toLowerCase().includes(searchValue.toLowerCase()) &&
+        item.quantity <= 20
     );
     setFilteredItems(searchResult);
   }, [searchValue, items]);
@@ -157,7 +162,8 @@ const InventoryDashboard = () => {
     return <div>{error}</div>;
   }
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (item) => {
+    console.log(item);
     try {
       const result = await Swal.fire({
         title: "Are you sure?",
@@ -171,8 +177,12 @@ const InventoryDashboard = () => {
       });
 
       if (result.isConfirmed) {
-        await axios.delete(`http://localhost:3000/api/item/delete/${id}`);
-        setItems(items.filter((rep) => rep._id !== id));
+        await send("service_fjpvjh9", "template_atolrdf", {
+          to_email: item.itemName,
+          product_name: item.suplier.supEmail,
+          status: "newStatus",
+        });
+
         Swal.fire("Deleted!", "The Item has been deleted.", "success");
       }
     } catch (error) {
@@ -213,7 +223,6 @@ const InventoryDashboard = () => {
       Swal.fire("Error", "An error occurred while updatingthe Item.", "error");
     }
   };
-
   return (
     <div>
       <AdminSidebar onCollapseChange={handleCollapseChange} />
@@ -249,15 +258,9 @@ const InventoryDashboard = () => {
             )}
           </PDFDownloadLink>
           <div className="flex">
-            <a href="/lowi">
-              <Badge
-                color="secondary"
-                badgeContent={filteredItems.length}
-                sx={{ m: 1, mr: 5 }}
-              >
-                <NotificationsActiveIcon sx={{ fontSize: 30 }} />
-              </Badge>
-            </a>
+            <Badge color="secondary" badgeContent={100} sx={{ m: 1, mr: 5 }}>
+              <NotificationsActiveIcon sx={{ fontSize: 30 }} />
+            </Badge>
             <FormGroup>
               <FormControlLabel
                 control={<MaterialUISwitch sx={{ m: 1 }} defaultChecked />}
@@ -301,7 +304,7 @@ const InventoryDashboard = () => {
         </div>
 
         <div className="p-6 ml-10">
-          <h2 className="text-2xl font-bold mb-4">Inventory Items</h2>
+          <h2 className="text-2xl font-bold mb-4">Low Inventory Items</h2>
 
           <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
             <thead className="bg-gray-200">
@@ -343,20 +346,13 @@ const InventoryDashboard = () => {
                   <td className="border border-gray-300 px-2 py-2">
                     <button
                       type="button"
-                      className="bg-pink-600 text-black text-xs px-4 py-2 rounded-md mr-2"
-                      onClick={() => openUpdateModal(item)}
-                    >
-                      Update
-                    </button>
-                    <button
-                      type="button"
                       className="bg-pink-600 text-black text-xs px-4 py-2 rounded-md "
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleDelete(item._id);
+                        handleDelete(item);
                       }}
                     >
-                      Delete
+                      Re Order
                     </button>
                   </td>
                 </tr>
@@ -663,4 +659,4 @@ const InventoryDashboard = () => {
   );
 };
 
-export default InventoryDashboard;
+export default LowInventory;
